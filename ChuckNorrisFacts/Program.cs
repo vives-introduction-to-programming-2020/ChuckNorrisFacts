@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ChuckFactsLibrary;
+using System;
+using System.Net;
 
 namespace ChuckNorrisFacts
 {
@@ -7,9 +9,19 @@ namespace ChuckNorrisFacts
         static void Main(string[] args)
         {
             ChuckNorrisFactShower shower = new ChuckNorrisFactShower();
-            shower.SetProvider(new FactFileLoader());
+            //shower.SetProvider(new FactFileLoader());
+            shower.SetProvider(new ApiFacts());
 
-            shower.ShowFact();
+            try
+            {
+                shower.ShowFact();
+            }
+            catch (WebException we)
+            {
+                Console.WriteLine("Chuck API unavailable. Switching to backup");
+                shower.SetProvider(new FactFileLoader());
+                shower.ShowFact();
+            }
 
         }
     }
